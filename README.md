@@ -41,7 +41,7 @@ Two images: `drone-train` (PyTorch, used for training, export and evaluation, co
 - [x] CPU optimization (ONNX, OpenVINO INT8)
 - [x] Inference API (Docker image)
 - [x] Kubernetes deployment (k3d)
-- [ ] Monitoring (Prometheus, Grafana)
+- [x] Monitoring (Prometheus, Grafana)
 
 ## Training
 
@@ -130,6 +130,8 @@ Prometheus discovers the API pods through their `prometheus.io/*` annotations an
 kubectl apply -k k8s/monitoring
 kubectl -n monitoring port-forward svc/grafana 3000:3000
 ```
+
+![Grafana dashboard](docs/grafana.png)
 
 `scripts/stream_client.py` replays a video (or a folder of images) against the API frame by frame to simulate a camera feed. `--serve` streams the annotated frames (boxes, latency, model version, serving pod) to the browser:
 
