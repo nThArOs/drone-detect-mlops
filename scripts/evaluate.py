@@ -28,7 +28,8 @@ def main():
     parser.add_argument("--weights", default=str(ROOT / "models" / "best.pt"))
     parser.add_argument("--tag", default="pytorch_fp32")
     parser.add_argument("--device")
-    parser.add_argument("--max-images", type=int, help="evaluate on the first N test images only")
+    parser.add_argument("--list", default="test.txt", help="image list in data/ (e.g. seraphim_test.txt)")
+    parser.add_argument("--max-images", type=int, help="evaluate on the first N images only")
     args = parser.parse_args()
 
     cfg = load_config()
@@ -37,9 +38,9 @@ def main():
     weights = Path(args.weights)
 
     data_dir = ROOT / "data"
-    lines = (data_dir / "test.txt").read_text().split()
+    lines = (data_dir / args.list).read_text().split()
     data_yaml = data_dir / "drone.yaml"
-    if args.max_images:
+    if args.max_images or args.list != "test.txt":
         lines = lines[:args.max_images]
         (data_dir / "test_subset.txt").write_text("\n".join(lines) + "\n")
         data_yaml = data_dir / "drone_subset.yaml"
@@ -54,6 +55,7 @@ def main():
 
     res = {
         "tag": args.tag,
+        "test_set": args.list,
         "test_images": len(lines),
         "size_mb": round(sum(f.stat().st_size for f in weights.rglob("*")) / 1e6 if weights.is_dir()
                          else weights.stat().st_size / 1e6, 1),

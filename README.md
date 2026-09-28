@@ -109,18 +109,35 @@ curl -F "file=@data/raw/test/images/000000.jpg" http://localhost:8000/detect
 Local cluster with [k3d](https://k3d.io). The Deployment pulls the image from Docker Hub, runs 2 replicas with readiness/liveness probes on `/health`, resource limits and a non-root security context. Config (`CONF`, `THREADS`) comes from a ConfigMap.
 
 ```bash
-k3d cluster create drone
+k3d cluster create drone -p "8080:80@loadbalancer"
 kubectl apply -f k8s/
 kubectl rollout status deployment/drone-detect-api
-kubectl port-forward svc/drone-detect-api 8000:80
+curl http://localhost:8080/health   # through the Traefik ingress
 ```
 
 Rolling update and rollback:
 
 ```bash
-kubectl set image deployment/drone-detect-api api=leaa1324/drone-detect-api:0.1.1
+kubectl set image deployment/drone-detect-api api=leaa1324/drone-detect-api:0.2.1
 kubectl rollout undo deployment/drone-detect-api
 ```
+
+## Monitoring
+
+Prometheus discovers the API pods through their `prometheus.io/*` annotations and scrapes container CPU/memory from the kubelet. Grafana comes with a provisioned dashboard: requests/s per pod, inference latency p50/p95/p99, detections per frame, confidence distribution, CPU and memory.
+
+```bash
+kubectl apply -k k8s/monitoring
+kubectl -n monitoring port-forward svc/grafana 3000:3000
+```
+
+`scripts/stream_client.py` replays a video (or a folder of images) against the API frame by frame to simulate a camera feed. `--serve` streams the annotated frames (boxes, latency, model version, serving pod) to the browser:
+
+```bash
+docker compose run --rm -p 8090:8090 train python scripts/stream_client.py data/videos/clip.mp4 --fps 5 --loop --serve 8090
+```
+
+Live view on http://localhost:8090.
 
 ## Video
 
@@ -129,6 +146,15 @@ docker compose run --rm train python scripts/predict_video.py data/videos --trac
 ```
 
 Output: `results/videos/` (annotated videos + `summary.json`).
+
+## External test set
+
+Cross-dataset check on the test split of [Seraphim](https://huggingface.co/datasets/lgrzybowski/seraphim-drone-detection-dataset) (CC BY 4.0, 8k images from 23 public drone datasets):
+
+```bash
+docker compose run --rm train python scripts/fetch_external.py seraphim
+docker compose run --rm train python scripts/evaluate.py --list seraphim_test.txt --tag seraphim_pytorch
+```
 
 ## Results
 

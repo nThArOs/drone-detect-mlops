@@ -1,22 +1,28 @@
 import io
 import os
+import socket
 import time
 
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.responses import Response
 from PIL import Image, ImageDraw, UnidentifiedImageError
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 
 from detector import Detector
 
 MODEL_PATH = os.getenv("MODEL_PATH", "/models/best.onnx")
 MODEL_VERSION = os.getenv("MODEL_VERSION", "dev")
+HOSTNAME = socket.gethostname()
 CLASSES = ["drone"]
 
 REQUESTS = Counter("detect_requests_total", "Detection requests", ["status"])
 DETECTIONS = Counter("detections_total", "Objects detected")
 LATENCY = Histogram("inference_seconds", "Model inference time",
                     buckets=(0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2))
+CONFIDENCE = Histogram("detection_confidence", "Confidence of returned detections",
+                       buckets=(0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0))
+MODEL_INFO = Gauge("model_info", "Loaded model", ["version"])
+MODEL_INFO.labels(MODEL_VERSION).set(1)
 
 app = FastAPI(title="drone-detect")
 detector = Detector(MODEL_PATH, conf=float(os.getenv("CONF", "0.3")),
@@ -43,6 +49,7 @@ async def run_detection(file, conf):
     REQUESTS.labels("ok").inc()
     DETECTIONS.inc(len(dets))
     for d in dets:
+        CONFIDENCE.observe(d["conf"])
         d["label"] = CLASSES[d["class"]]
     return img, dets, dt
 
@@ -51,7 +58,7 @@ async def run_detection(file, conf):
 async def detect(file: UploadFile = File(...), conf: float | None = Query(None, ge=0, le=1)):
     img, dets, dt = await run_detection(file, conf)
     return {"detections": dets, "inference_ms": round(dt * 1000, 1),
-            "image_size": list(img.size), "model_version": MODEL_VERSION}
+            "image_size": list(img.size), "model_version": MODEL_VERSION, "host": HOSTNAME}
 
 
 @app.post("/detect/image")

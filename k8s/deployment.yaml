@@ -18,10 +18,14 @@ spec:
     metadata:
       labels:
         app: drone-detect-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: /metrics
     spec:
       containers:
         - name: api
-          image: leaa1324/drone-detect-api:0.1.0
+          image: leaa1324/drone-detect-api:0.2.0
           ports:
             - name: http
               containerPort: 8000
