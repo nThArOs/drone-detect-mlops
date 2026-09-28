@@ -3,3 +3,4 @@ datasets>=2.18
 pyyaml
 tqdm
 pillow
+lap>=0.5.12

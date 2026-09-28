@@ -21,6 +21,14 @@ docker compose run --rm train python scripts/train.py
 docker compose run --rm train python scripts/evaluate.py --tag pytorch_cpu
 ```
 
+## Video
+
+```bash
+docker compose run --rm train python scripts/predict_video.py data/videos/clip.mp4 --track
+```
+
+Output: `results/clip_detect.mp4`.
+
 ## Results
 
 | Model | mAP50 | mAP50-95 | Latency (ms) | Hardware |
