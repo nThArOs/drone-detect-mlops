@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1
+
+# build stage: install dependencies into a venv
+FROM python:3.11-slim AS build
+RUN python -m venv /venv
+ENV PATH=/venv/bin:$PATH
+COPY api/requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
+
+# runtime stage: venv + code + model only, no build tools, no torch
+FROM python:3.11-slim
+ARG MODEL_VERSION=dev
+LABEL org.opencontainers.image.title="drone-detect-api" \
+      org.opencontainers.image.source="https://github.com/nThArOs/drone-detect-mlops" \
+      org.opencontainers.image.version=$MODEL_VERSION
+
+RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin app
+COPY --from=build /venv /venv
+COPY api/ /app/
+COPY models/best.onnx /models/best.onnx
+
+ENV PATH=/venv/bin:$PATH \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    MODEL_PATH=/models/best.onnx \
+    MODEL_VERSION=$MODEL_VERSION
+
+WORKDIR /app
+USER app
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
