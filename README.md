@@ -64,7 +64,19 @@ docker compose run --rm train python scripts/evaluate.py --weights models/best.p
 docker compose run --rm train python scripts/evaluate.py --weights models/best.onnx --tag onnx
 docker compose run --rm train python scripts/evaluate.py --weights models/best_openvino_model --tag openvino
 docker compose run --rm train python scripts/evaluate.py --weights models/best_int8_openvino_model --tag openvino_int8
-docker compose run --rm train python scripts/compare.py
+docker compose run --rm train python scripts/compare.py --readme
+```
+
+## Public models for comparison
+
+`scripts/fetch_pretrained.py` downloads two public drone detectors to `models/external/`, evaluated on the same test split:
+[doguilmak/Drone-Detection-YOLOv11x](https://huggingface.co/doguilmak/Drone-Detection-YOLOv11x) (MIT) and
+[IRIS-Computer-Vision/YOLOv8s_EO_Drone_Detection](https://huggingface.co/IRIS-Computer-Vision/YOLOv8s_EO_Drone_Detection) (CC BY-NC 4.0).
+
+```bash
+docker compose run --rm train python scripts/fetch_pretrained.py
+docker compose run --rm train python scripts/evaluate.py --weights models/external/yolov8s_iris.pt --tag ext_yolov8s_iris
+docker compose run --rm train python scripts/evaluate.py --weights models/external/yolo11x_doguilmak.pt --tag ext_yolo11x_doguilmak
 ```
 
 ## Inference API
@@ -94,5 +106,17 @@ Output: `results/videos/` (annotated videos + `summary.json`).
 
 ## Results
 
-| Model | mAP50 | mAP50-95 | Latency (ms) | FPS | Size (MB) |
+Same test split for every model: 2625 images from a source not used in training (public models were trained on other data).
+
+<!-- results:start -->
+| Model | mAP50 | mAP50-95 | Latency (ms) | Size (MB) | Test images |
 | --- | --- | --- | --- | --- | --- |
+| YOLO11n (ours), PyTorch | – | – | – | – | – |
+| YOLO11n (ours), ONNX Runtime | – | – | – | – | – |
+| YOLO11n (ours), OpenVINO FP32 | – | – | – | – | – |
+| YOLO11n (ours), OpenVINO INT8 | – | – | – | – | – |
+| YOLOv8s, [IRIS](https://huggingface.co/IRIS-Computer-Vision/YOLOv8s_EO_Drone_Detection) | – | – | – | – | – |
+| YOLO11x, [doguilmak](https://huggingface.co/doguilmak/Drone-Detection-YOLOv11x) | – | – | – | – | – |
+
+Latency: batch 1, 640 px, CPU only, inside Docker.
+<!-- results:end -->
