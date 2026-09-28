@@ -164,6 +164,23 @@ docker compose run --rm train python scripts/predict_video.py data/videos --trac
 
 Output: `results/videos/` (annotated videos + `summary.json`).
 
+## Compressed domain
+
+Side project: [compressed-detection](https://github.com/nThArOs/compressed-detection), following CoViAR (Wu et al., CVPR 2018). Videos are re-encoded to H.264 with a GOP of 12 and no B-frames, then PyAV gives the I-frames and motion vectors; the residual is the frame minus the previous frame warped by the motion vectors.
+
+Columns: decoded frame, motion vectors (hue = direction, brightness = magnitude), residual.
+
+![Compressed domain, clip](docs/compressed/clip_triptych.gif)
+
+<p>
+  <img src="docs/compressed/clip_mosaic.jpg" width="49%">
+  <img src="docs/compressed/bird_flock_mosaic.jpg" width="49%">
+</p>
+
+Videos: [clip](docs/compressed/clip_triptych.mp4), [bird_flock](docs/compressed/bird_flock_triptych.mp4).
+
+On `clip`, motion compensation brings the mean absolute residual from 0.71 (plain frame difference) to 0.27. The drone stands out in the residual; the motion vectors are noisy on the sky and do not resolve objects smaller than a block.
+
 ## External test set
 
 Cross-dataset check on the test split of [Seraphim](https://huggingface.co/datasets/lgrzybowski/seraphim-drone-detection-dataset) (CC BY 4.0, 8k images from 23 public drone datasets):
