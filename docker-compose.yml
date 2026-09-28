@@ -1,0 +1,13 @@
+services:
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    image: drone-train:cpu
+    volumes:
+      - ./data:/app/data
+      - ./runs:/app/runs
+      - ./models:/app/models
+      - ./results:/app/results
+      - ./configs:/app/configs
+    shm_size: "2gb"

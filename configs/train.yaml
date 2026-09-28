@@ -1,0 +1,22 @@
+dataset:
+  hf_name: pathikg/drone-detection-dataset
+  train_size: 1500
+  val_size: 300
+  test_size: 300
+  seed: 42
+  out_dir: data/drone
+
+train:
+  model: yolo11n.pt
+  epochs: 30
+  imgsz: 640
+  batch: 8
+  patience: 10
+  workers: 2
+  device: auto
+  project: runs/train
+  name: yolo11n_drone
+
+benchmark:
+  warmup: 10
+  runs: 100

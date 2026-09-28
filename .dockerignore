@@ -1,0 +1,12 @@
+data/
+runs/
+models/
+results/
+*.pt
+*.onnx
+.git/
+.venv/
+__pycache__/
+CLAUDE.md
+PROMPT_CLAUDE_CODE.md
+.claude/
