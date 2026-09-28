@@ -20,7 +20,7 @@ def main():
     tr["batch"] = args.batch or tr["batch"]
     device = resolve_device(args.device or tr["device"])
 
-    data = ROOT / cfg["dataset"]["out_dir"] / "data.yaml"
+    data = ROOT / "data" / "drone.yaml"
     if not data.exists():
         raise SystemExit("no dataset found, run prepare_data.py first")
 
@@ -33,6 +33,7 @@ def main():
         batch=tr["batch"],
         patience=tr["patience"],
         workers=tr["workers"],
+        cache=tr.get("cache", False),
         device=device,
         project=str(ROOT / tr["project"]),
         name=tr["name"],

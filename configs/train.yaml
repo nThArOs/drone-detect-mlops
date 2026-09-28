@@ -1,18 +1,19 @@
 dataset:
   hf_name: pathikg/drone-detection-dataset
-  train_size: 1500
+  raw_dir: data/raw
+  train_size: 2000
   val_size: 300
-  test_size: 300
+  test_size: 0        # 0 = the whole HF test split (2625 images, separate source)
   seed: 42
-  out_dir: data/drone
 
 train:
   model: yolo11n.pt
-  epochs: 30
+  epochs: 20
   imgsz: 640
-  batch: 8
-  patience: 10
-  workers: 2
+  batch: 16
+  patience: 5
+  workers: 4
+  cache: ram
   device: auto
   project: runs/train
   name: yolo11n_drone

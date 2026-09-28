@@ -10,4 +10,18 @@ services:
       - ./models:/app/models
       - ./results:/app/results
       - ./configs:/app/configs
+      - ./scripts:/app/scripts
     shm_size: "2gb"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+      args:
+        MODEL_VERSION: dev
+    image: drone-detect-api:dev
+    ports:
+      - "8000:8000"
+    environment:
+      CONF: "0.3"
+    profiles: ["api"]

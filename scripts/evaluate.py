@@ -33,19 +33,19 @@ def main():
     cfg = load_config()
     device = resolve_device(args.device or cfg["train"]["device"])
     imgsz = cfg["train"]["imgsz"]
-    data_dir = ROOT / cfg["dataset"]["out_dir"]
     weights = Path(args.weights)
 
-    model = YOLO(str(weights))
-    m = model.val(data=str(data_dir / "data.yaml"), split="test", imgsz=imgsz,
+    model = YOLO(str(weights), task="detect")
+    m = model.val(data=str(ROOT / "data" / "drone.yaml"), split="test", imgsz=imgsz,
                   device=device, plots=False, verbose=False)
 
-    images = sorted((data_dir / "images" / "test").glob("*.jpg"))
+    images = [ROOT / "data" / l[2:] for l in (ROOT / "data" / "test.txt").read_text().split()]
     lat = latency(model, images, device, imgsz, cfg["benchmark"]["warmup"], cfg["benchmark"]["runs"])
 
     res = {
         "tag": args.tag,
-        "size_mb": round(weights.stat().st_size / 1e6, 1),
+        "size_mb": round(sum(f.stat().st_size for f in weights.rglob("*")) / 1e6 if weights.is_dir()
+                         else weights.stat().st_size / 1e6, 1),
         "precision": round(float(m.box.mp), 3),
         "recall": round(float(m.box.mr), 3),
         "map50": round(float(m.box.map50), 3),

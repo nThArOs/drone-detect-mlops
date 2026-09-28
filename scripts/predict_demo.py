@@ -15,7 +15,7 @@ def main():
 
     cfg = load_config()
     device = resolve_device(cfg["train"]["device"])
-    images = sorted((ROOT / cfg["dataset"]["out_dir"] / "images" / "test").glob("*.jpg"))
+    images = [ROOT / "data" / l[2:] for l in (ROOT / "data" / "test.txt").read_text().split()]
     random.Random(cfg["dataset"]["seed"]).shuffle(images)
 
     model = YOLO(args.weights)

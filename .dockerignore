@@ -1,9 +1,9 @@
 data/
 runs/
-models/
+models/*
+!models/best.onnx
 results/
 *.pt
-*.onnx
 .git/
 .venv/
 __pycache__/
