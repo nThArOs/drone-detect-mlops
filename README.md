@@ -104,6 +104,24 @@ curl -F "file=@data/raw/test/images/000000.jpg" http://localhost:8000/detect
 | `GET /metrics` | request count, detections, inference latency histogram |
 | `GET /docs` | Swagger UI |
 
+## Kubernetes
+
+Local cluster with [k3d](https://k3d.io). The Deployment pulls the image from Docker Hub, runs 2 replicas with readiness/liveness probes on `/health`, resource limits and a non-root security context. Config (`CONF`, `THREADS`) comes from a ConfigMap.
+
+```bash
+k3d cluster create drone
+kubectl apply -f k8s/
+kubectl rollout status deployment/drone-detect-api
+kubectl port-forward svc/drone-detect-api 8000:80
+```
+
+Rolling update and rollback:
+
+```bash
+kubectl set image deployment/drone-detect-api api=leaa1324/drone-detect-api:0.1.1
+kubectl rollout undo deployment/drone-detect-api
+```
+
 ## Video
 
 ```bash
