@@ -47,6 +47,9 @@ def main():
     print(t)
     if args.readme:
         path = ROOT / "README.md"
+        if not path.exists():
+            print("README.md not mounted in the container, table not written")
+            return
         s = path.read_text(encoding="utf-8")
         i, j = s.index(START) + len(START), s.index(END)
         path.write_text(s[:i] + "\n" + t + "\n" + s[j:], encoding="utf-8")

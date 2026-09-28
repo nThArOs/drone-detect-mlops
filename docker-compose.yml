@@ -11,6 +11,7 @@ services:
       - ./results:/app/results
       - ./configs:/app/configs
       - ./scripts:/app/scripts
+      - ./README.md:/app/README.md
     shm_size: "2gb"
 
   api:
