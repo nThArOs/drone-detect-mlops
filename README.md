@@ -11,14 +11,26 @@ Drone detection with YOLO11n, from training to a containerized inference service
 
 ```mermaid
 flowchart LR
-    HF[(HF dataset<br/>54k images)] -->|export_dataset.py| RAW[data/raw<br/>JPG + YOLO labels]
-    RAW -->|prepare_data.py| SPLITS[train / val / test lists]
-    SPLITS -->|train.py| PT[best.pt]
-    PT -->|export_models.py| EXP[ONNX<br/>OpenVINO FP32 / INT8]
-    EXP -->|evaluate.py + compare.py| BENCH[mAP / latency table]
-    EXP -->|best.onnx| IMG[Docker image<br/>FastAPI + ONNX Runtime]
-    IMG --> HUB[(Docker Hub)]
-    HUB --> K8S[k3d cluster]
+    subgraph DATA[1. Data]
+        direction TB
+        HF[(Hugging Face<br/>54k images)] -->|export_dataset| RAW[data/raw<br/>JPG + labels]
+        RAW -->|prepare_data| SPLITS[train / val / test<br/>lists]
+    end
+
+    subgraph TRAIN[2. drone-train image]
+        direction TB
+        PT[train<br/>best.pt] -->|export_models| EXP[ONNX<br/>OpenVINO INT8]
+        EXP -->|evaluate| BENCH[mAP / latency<br/>table]
+    end
+
+    subgraph SERVE[3. drone-detect-api image]
+        direction TB
+        API[FastAPI<br/>ONNX Runtime] --> HUB[(Docker Hub)]
+        HUB --> K8S[k3d cluster]
+    end
+
+    DATA --> TRAIN
+    TRAIN -->|best.onnx| SERVE
 ```
 
 Two images: `drone-train` (PyTorch, used for training, export and evaluation, code mounted from the repo) and `drone-detect-api` (serving only, no PyTorch, non-root, healthcheck).
