@@ -156,6 +156,11 @@ docker compose run --rm train python scripts/fetch_external.py seraphim
 docker compose run --rm train python scripts/evaluate.py --list seraphim_test.txt --tag seraphim_pytorch
 ```
 
+| Test set | Images | Precision | Recall | mAP50 | mAP50-95 |
+| --- | --- | --- | --- | --- | --- |
+| pathikg test split | 2625 | 0.831 | 0.717 | 0.785 | 0.345 |
+| Seraphim test (unseen sources) | 8349 | 0.894 | 0.685 | 0.732 | 0.452 |
+
 ## Results
 
 Same test split for every model: 2625 images from a source not used in training (public models were trained on other data).

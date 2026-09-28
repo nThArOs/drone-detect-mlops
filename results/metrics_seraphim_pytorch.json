@@ -1,0 +1,21 @@
+{
+  "tag": "seraphim_pytorch",
+  "test_set": "seraphim_test.txt",
+  "test_images": 8349,
+  "size_mb": 5.5,
+  "precision": 0.894,
+  "recall": 0.685,
+  "map50": 0.732,
+  "map50_95": 0.452,
+  "latency": {
+    "mean_ms": 63.4,
+    "p95_ms": 72.7,
+    "fps": 15.8
+  },
+  "hardware": {
+    "device": "cpu",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "torch": "2.14.0+cpu",
+    "cpu": ""
+  }
+}
