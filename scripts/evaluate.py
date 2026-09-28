@@ -6,7 +6,8 @@ from pathlib import Path
 
 from ultralytics import YOLO
 
-from common import ROOT, hardware_info, load_config, resolve_device, save_json
+from common import (ROOT, f1, hardware_info, load_config, log_eval, mlflow_enabled,
+                    resolve_device, save_json)
 
 
 def latency(model, images, device, imgsz, warmup, runs):
@@ -61,12 +62,15 @@ def main():
                          else weights.stat().st_size / 1e6, 1),
         "precision": round(float(m.box.mp), 3),
         "recall": round(float(m.box.mr), 3),
+        "f1": f1(float(m.box.mp), float(m.box.mr)),
         "map50": round(float(m.box.map50), 3),
         "map50_95": round(float(m.box.map), 3),
         "latency": lat,
         "hardware": hardware_info(device),
     }
     save_json(res, ROOT / "results" / f"metrics_{args.tag}.json")
+    if mlflow_enabled():
+        log_eval(res, weights.name)
     print(f"mAP50 {res['map50']}  mAP50-95 {res['map50_95']}  "
           f"{lat['mean_ms']} ms/img ({lat['fps']} fps)")
 

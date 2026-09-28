@@ -21,3 +21,4 @@ venv/
 CLAUDE.md
 PROMPT_CLAUDE_CODE.md
 .claude/
+mlflow/

@@ -42,6 +42,7 @@ Two images: `drone-train` (PyTorch, used for training, export and evaluation, co
 - [x] Inference API (Docker image)
 - [x] Kubernetes deployment (k3d)
 - [x] Monitoring (Prometheus, Grafana)
+- [x] Experiment tracking and model registry (MLflow)
 
 ## Training
 
@@ -140,6 +141,20 @@ docker compose run --rm -p 8090:8090 train python scripts/stream_client.py data/
 ```
 
 Live view on http://localhost:8090.
+
+## MLflow
+
+Tracking server in `docker compose` (SQLite + local artifact store), UI on http://localhost:5000. The `train` service logs to it automatically:
+
+- `train.py`: params, per-epoch losses and metrics, plots and weights (Ultralytics MLflow callback)
+- `evaluate.py`: one run per evaluation (precision, recall, F1, mAP, latency, hardware)
+- `register_model.py`: registers the ONNX model as `drone-detector`, tags the version with the Docker image that serves it and moves the `production` alias
+
+```bash
+docker compose up -d mlflow
+docker compose run --rm train python scripts/log_results.py      # import past runs and results
+docker compose run --rm train python scripts/register_model.py --image leaa1324/drone-detect-api:0.2.1
+```
 
 ## Video
 

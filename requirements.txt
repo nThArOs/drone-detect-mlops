@@ -10,3 +10,5 @@ onnxslim
 onnxruntime
 openvino
 nncf
+mlflow-skinny==3.16.1
+pandas
