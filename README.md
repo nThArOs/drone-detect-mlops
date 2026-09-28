@@ -111,12 +111,12 @@ Same test split for every model: 2625 images from a source not used in training 
 <!-- results:start -->
 | Model | mAP50 | mAP50-95 | Latency (ms) | Size (MB) | Test images |
 | --- | --- | --- | --- | --- | --- |
-| YOLO11n (ours), PyTorch | 0.276 | 0.117 | 439.6 | 5.5 | 2625 |
-| YOLO11n (ours), ONNX Runtime | 0.258 | 0.109 | 337.1 | 10.6 | 2625 |
-| YOLO11n (ours), OpenVINO FP32 | 0.258 | 0.109 | 114.2 | 10.7 | 2625 |
-| YOLO11n (ours), OpenVINO INT8 | 0.256 | 0.107 | 88.8 | 3.4 | 2625 |
-| YOLOv8s, [IRIS](https://huggingface.co/IRIS-Computer-Vision/YOLOv8s_EO_Drone_Detection) | 0.178 | 0.046 | 256.2 | 22.5 | 2625 |
-| YOLO11x, [doguilmak](https://huggingface.co/doguilmak/Drone-Detection-YOLOv11x) | 0.546 | 0.210 | 1889.0 | 114.4 | 2625 |
+| YOLO11n (ours), PyTorch | 0.785 | 0.345 | 45.8 | 5.5 | 2625 |
+| YOLO11n (ours), ONNX Runtime | 0.781 | 0.345 | 99.9 | 10.6 | 2625 |
+| YOLO11n (ours), OpenVINO FP32 | 0.781 | 0.345 | 42.3 | 10.7 | 2625 |
+| YOLO11n (ours), OpenVINO INT8 | 0.769 | 0.322 | 35.6 | 3.4 | 2625 |
+| YOLOv8s, [IRIS](https://huggingface.co/IRIS-Computer-Vision/YOLOv8s_EO_Drone_Detection) | 0.194 | 0.053 | 98.6 | 22.5 | 500 |
+| YOLO11x, [doguilmak](https://huggingface.co/doguilmak/Drone-Detection-YOLOv11x) | 0.547 | 0.208 | 533.8 | 114.4 | 500 |
 
 Latency: batch 1, 640 px, CPU only (Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41), inside Docker.
 <!-- results:end -->
