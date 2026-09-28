@@ -37,8 +37,8 @@ Two images: `drone-train` (PyTorch, used for training, export and evaluation, co
 
 ## Roadmap
 
-- [ ] Training
-- [ ] CPU optimization (ONNX, OpenVINO INT8)
+- [x] Training
+- [x] CPU optimization (ONNX, OpenVINO INT8)
 - [x] Inference API (Docker image)
 - [ ] Kubernetes deployment (k3d)
 - [ ] Monitoring (Prometheus, Grafana)
@@ -82,6 +82,14 @@ docker compose run --rm train python scripts/evaluate.py --weights models/extern
 ## Inference API
 
 FastAPI + ONNX Runtime, no PyTorch in the image. Multi-stage build, non-root user, healthcheck, Prometheus metrics.
+
+Published on Docker Hub as [`leaa1324/drone-detect-api`](https://hub.docker.com/r/leaa1324/drone-detect-api):
+
+```bash
+docker run --rm -p 8000:8000 leaa1324/drone-detect-api:0.1.0
+```
+
+From source:
 
 ```bash
 docker compose --profile api up --build api
