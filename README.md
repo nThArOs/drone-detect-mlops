@@ -40,7 +40,7 @@ Two images: `drone-train` (PyTorch, used for training, export and evaluation, co
 - [x] Training
 - [x] CPU optimization (ONNX, OpenVINO INT8)
 - [x] Inference API (Docker image)
-- [ ] Kubernetes deployment (k3d)
+- [x] Kubernetes deployment (k3d)
 - [ ] Monitoring (Prometheus, Grafana)
 
 ## Training
