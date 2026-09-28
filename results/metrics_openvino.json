@@ -1,0 +1,20 @@
+{
+  "tag": "openvino",
+  "test_images": 2625,
+  "size_mb": 10.7,
+  "precision": 0.834,
+  "recall": 0.713,
+  "map50": 0.781,
+  "map50_95": 0.345,
+  "latency": {
+    "mean_ms": 42.3,
+    "p95_ms": 44.5,
+    "fps": 23.6
+  },
+  "hardware": {
+    "device": "cpu",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "torch": "2.14.0+cpu",
+    "cpu": ""
+  }
+}

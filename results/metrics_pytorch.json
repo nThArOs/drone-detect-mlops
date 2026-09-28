@@ -1,0 +1,20 @@
+{
+  "tag": "pytorch",
+  "test_images": 2625,
+  "size_mb": 5.5,
+  "precision": 0.831,
+  "recall": 0.717,
+  "map50": 0.785,
+  "map50_95": 0.345,
+  "latency": {
+    "mean_ms": 45.8,
+    "p95_ms": 48.9,
+    "fps": 21.8
+  },
+  "hardware": {
+    "device": "cpu",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "torch": "2.14.0+cpu",
+    "cpu": ""
+  }
+}

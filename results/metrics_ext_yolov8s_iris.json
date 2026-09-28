@@ -1,0 +1,20 @@
+{
+  "tag": "ext_yolov8s_iris",
+  "test_images": 500,
+  "size_mb": 22.5,
+  "precision": 0.488,
+  "recall": 0.227,
+  "map50": 0.194,
+  "map50_95": 0.053,
+  "latency": {
+    "mean_ms": 98.6,
+    "p95_ms": 116.9,
+    "fps": 10.1
+  },
+  "hardware": {
+    "device": "cpu",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "torch": "2.14.0+cpu",
+    "cpu": ""
+  }
+}
